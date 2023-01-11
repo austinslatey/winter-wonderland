@@ -24,6 +24,9 @@ class Level extends Phaser.Scene {
     create() {
       gameState.active = true
   
+      // Create gameState.bgColor here!
+      gameState.bgColor = this.add.rectangle(0, 0, config.width, config.height, 0x00aaff).setOrigin(0, 0);
+  
       this.createParallaxBackgrounds();
   
       gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
@@ -100,7 +103,9 @@ class Level extends Phaser.Scene {
       const bg2_width = gameState.bg2.getBounds().width
       const bg3_width = gameState.bg3.getBounds().width
   
-      // Set the scroll factor for bg1, bg2, and bg3 here!
+      if (gameState.bgColor) {
+          gameState.bgColor .setScrollFactor(0);
+      }
       gameState.bg1.setScrollFactor((bg1_width - window_width) / (game_width - window_width));
       gameState.bg2.setScrollFactor((bg2_width - window_width) / (game_width - window_width));
     }
@@ -110,7 +115,6 @@ class Level extends Phaser.Scene {
         this.createPlatform(xIndex, yIndex);
       } 
       
-      // Create the campfire at the end of the level
       gameState.goal = this.physics.add.sprite(gameState.width - 40, 100, 'campfire');
   
       this.physics.add.overlap(gameState.player, gameState.goal, function() {
@@ -121,7 +125,8 @@ class Level extends Phaser.Scene {
           }
         });
       }, null, this);
-  
+      // Set weather here
+      this.setWeather(this.weather);
     }
   
     update() {
@@ -158,12 +163,42 @@ class Level extends Phaser.Scene {
         }
       }
     }
+  
+    // Weather objexts
+    setWeather(weather) {
+      const weathers = {
+        'morning': {
+          'bgColor': 0xF8c3aC,
+        },
+  
+        'afternoon': {
+          'bgColor': 0x0571FF,
+        },
+  
+        'twilight': {
+          'bgColor': 0x18235C,
+        },
+  
+        'night': {
+          'bgColor': 0x000000,
+        },
+      }
+
+    // Conditional for weather in game
+      if (weather) {
+        let { bgColor } = weathers[weather];
+        // Update gameState.bgColor.fillColor here!
+        gameState.bgColor.fillColor = bgColor
+      }
+    }
   }
   
   class Level1 extends Level {
     constructor() {
       super('Level1')
       this.heights = [4, 7, 5, null, 5, 4, null, 4, 4];
+      // Add Level1 weather here
+      this.weather = 'afternoon'
     }
   }
   
@@ -171,6 +206,8 @@ class Level extends Phaser.Scene {
     constructor() {
       super('Level2')
       this.heights = [5, 4, null, 4, 6, 4, 6, 5, 5];
+      // Add Level2 weather here
+      this.weather = "twilight"
     }
   }
   
